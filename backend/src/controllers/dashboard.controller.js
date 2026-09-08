@@ -27,6 +27,23 @@ export const getDashboardKPIs = async (req, res) => {
       });
     });
 
+    // Subtract COGS for returned items (since they go back into inventory, they aren't "sold")
+    returns.forEach((ret) => {
+      ret.items.forEach((retItem) => {
+        const originalSale = sales.find(
+          (s) => s._id.toString() === ret.saleId.toString()
+        );
+        if (originalSale) {
+          const originalItem = originalSale.items.find(
+            (i) => i.productId.toString() === retItem.productId.toString()
+          );
+          if (originalItem) {
+            totalCOGS -= (retItem.quantity || 0) * (originalItem.unitCost || 0);
+          }
+        }
+      });
+    });
+
     const totalRefundAmount = returns.reduce(
       (sum, ret) => sum + (ret.totalRefundAmount || 0),
       0,
