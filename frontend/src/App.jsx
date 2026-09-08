@@ -121,7 +121,11 @@ function App() {
                   </Route>
 
                   <Route path="/expenses" element={<ComingSoon />} />
-                  <Route path="/reports" element={<Reports />} />
+                  <Route
+                    element={<ProtectedRoute requiredPermission="report:read" />}
+                  >
+                    <Route path="/reports" element={<Reports />} />
+                  </Route>
                 </Route>
               </Route>
 

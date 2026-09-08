@@ -75,7 +75,7 @@ const MainLayout = () => {
       perm: "inventory:read",
     },
     { to: "/expenses", label: "Expenses", icon: Receipt, perm: "sale:read" },
-    { to: "/reports", label: "Reports", icon: BarChart3, always: true },
+    { to: "/reports", label: "Reports", icon: BarChart3, perm: "report:read" },
   ];
 
   const adminNav = [

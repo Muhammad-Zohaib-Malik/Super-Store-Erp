@@ -62,8 +62,8 @@ export const authorize = (permissionString) => {
 
     const rolePerms = req.user.role?.permissions || [];
 
-    // Check for wildcard permissions or intrinsic Admin access
-    if (rolePerms.includes("*") || req.user.role?.name === "Admin") {
+    // Check for wildcard permissions
+    if (rolePerms.includes("*")) {
       return next();
     }
 

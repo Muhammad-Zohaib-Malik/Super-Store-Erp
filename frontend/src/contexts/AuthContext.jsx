@@ -40,6 +40,7 @@ export const AuthProvider = ({ children }) => {
     if (!user) return false;
 
     const rolePerms = user.role?.permissions || [];
+    if (rolePerms.includes("*")) return true;
     return rolePerms.includes(permission);
   };
 
