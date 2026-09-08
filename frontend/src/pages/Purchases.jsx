@@ -833,15 +833,7 @@ const Purchases = () => {
                 Close
               </button>
               <button
-                onClick={() => {
-                  const printContent =
-                    document.getElementById("printable-record");
-                  const originalContents = document.body.innerHTML;
-                  document.body.innerHTML = printContent.innerHTML;
-                  window.print();
-                  document.body.innerHTML = originalContents;
-                  window.location.reload();
-                }}
+                onClick={() => window.print()}
                 className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 rounded-lg transition-colors cursor-pointer"
               >
                 <Printer size={16} />

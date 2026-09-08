@@ -249,10 +249,13 @@ textarea::placeholder {
     visibility: hidden;
   }
   #printable-invoice,
-  #printable-invoice * {
+  #printable-invoice *,
+  #printable-record,
+  #printable-record * {
     visibility: visible;
   }
-  #printable-invoice {
+  #printable-invoice,
+  #printable-record {
     position: absolute;
     left: 0;
     top: 0;
