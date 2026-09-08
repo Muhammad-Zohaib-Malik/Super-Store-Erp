@@ -34,7 +34,8 @@ export const login = async (req, res) => {
 
     const cookieOptions = {
       httpOnly: true,
-      maxAge: 24 * 60 * 60 * 1000, // 1 day
+      sameSite: "none",
+      secure: true,
     };
 
     res
