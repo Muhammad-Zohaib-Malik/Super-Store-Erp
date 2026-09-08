@@ -49,3 +49,24 @@ export const deleteSupplier = async (req, res) => {
     res.status(400).json({ success: false, message: error.message });
   }
 };
+
+export const getSupplierProducts = async (req, res) => {
+  try {
+    const products = await supplierService.getSupplierProducts(req.params.id);
+    res.status(200).json({ success: true, data: products });
+  } catch (error) {
+    res.status(404).json({ success: false, message: error.message });
+  }
+};
+
+export const updateSupplierProducts = async (req, res) => {
+  try {
+    const products = await supplierService.updateSupplierProducts(
+      req.params.id,
+      req.body.products,
+    );
+    res.status(200).json({ success: true, data: products });
+  } catch (error) {
+    res.status(400).json({ success: false, message: error.message });
+  }
+};

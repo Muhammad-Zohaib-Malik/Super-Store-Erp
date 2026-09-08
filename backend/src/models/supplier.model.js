@@ -2,6 +2,26 @@ import mongoose from "mongoose";
 
 const { Schema } = mongoose;
 
+const supplierProductSchema = new Schema(
+  {
+    productId: {
+      type: Schema.Types.ObjectId,
+      ref: "Product",
+      required: true,
+    },
+    costPrice: {
+      type: Number,
+      required: true,
+      min: 0,
+    },
+    isAvailable: {
+      type: Boolean,
+      default: true,
+    },
+  },
+  { _id: false },
+);
+
 const supplierSchema = new Schema(
   {
     name: {
@@ -28,6 +48,10 @@ const supplierSchema = new Schema(
     isActive: {
       type: Boolean,
       default: true,
+    },
+    products: {
+      type: [supplierProductSchema],
+      default: [],
     },
   },
   { timestamps: true },

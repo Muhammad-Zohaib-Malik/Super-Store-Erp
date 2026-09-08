@@ -66,7 +66,6 @@ const productSchema = new Schema(
     supplierId: {
       type: Schema.Types.ObjectId,
       ref: "Supplier",
-      required: true,
     },
 
     isActive: {

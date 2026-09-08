@@ -6,4 +6,7 @@ export const supplierApi = {
   updateSupplier: (id, supplierData) =>
     api.put(`/suppliers/${id}`, supplierData),
   deleteSupplier: (id) => api.delete(`/suppliers/${id}`),
+  getSupplierProducts: (id) => api.get(`/suppliers/${id}/products`),
+  updateSupplierProducts: (id, products) =>
+    api.put(`/suppliers/${id}/products`, { products }),
 };

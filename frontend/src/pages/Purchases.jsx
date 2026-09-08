@@ -16,6 +16,7 @@ import {
   Search,
   Receipt,
   Printer,
+  Truck,
 } from "lucide-react";
 
 const Purchases = () => {
@@ -129,10 +130,16 @@ const Purchases = () => {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setForm((f) => ({ ...f, [name]: value }));
+    // When supplier changes, clear the cart since products change
+    if (name === "supplierId") {
+      setCart([]);
+      setProductSearch("");
+    }
   };
 
-  const addProductToCart = (product) => {
+  const addProductToCart = (product, supplierCostPrice) => {
     const existing = cart.find((item) => item.productId === product._id);
+    const costPrice = supplierCostPrice ?? product.costPrice ?? 0;
     if (existing) {
       setCart(
         cart.map((item) =>
@@ -152,8 +159,8 @@ const Purchases = () => {
           productId: product._id,
           name: product.name,
           quantity: 1,
-          unitCost: product.costPrice || 0, // Fallback if no costPrice exists
-          subtotal: product.costPrice || 0,
+          unitCost: costPrice,
+          subtotal: costPrice,
         },
       ]);
     }
@@ -360,10 +367,29 @@ const Purchases = () => {
     },
   ];
 
+  // Get selected supplier's product list
+  const selectedSupplier = suppliers.find((s) => s._id === form.supplierId);
+  const supplierProductList = selectedSupplier?.products || [];
+
+  // Build available products for the purchase modal:
+  // If a supplier is selected → show only that supplier's available products
+  // Otherwise show all products
+  const availableProductsForPurchase = form.supplierId
+    ? supplierProductList
+        .filter((sp) => sp.isAvailable !== false)
+        .map((sp) => {
+          const product = products.find(
+            (p) => p._id === (sp.productId?._id || sp.productId),
+          );
+          return product ? { ...product, _supplierCostPrice: sp.costPrice } : null;
+        })
+        .filter(Boolean)
+    : products;
+
   const filteredProducts =
     productSearch.trim() === ""
-      ? products
-      : products.filter(
+      ? availableProductsForPurchase
+      : availableProductsForPurchase.filter(
           (p) =>
             p.name.toLowerCase().includes(productSearch.toLowerCase()) ||
             p.sku.toLowerCase().includes(productSearch.toLowerCase()),
@@ -430,10 +456,18 @@ const Purchases = () => {
               </div>
             </div>
             <div className="flex-1 overflow-y-auto p-4">
-              {filteredProducts.length === 0 ? (
+              {!form.supplierId ? (
+                <div className="h-full flex flex-col items-center justify-center text-content-muted">
+                  <Truck className="w-10 h-10 mb-3 opacity-20" />
+                  <p className="text-sm font-medium">Select a supplier first</p>
+                  <p className="text-xs mt-1 text-content-subtle">Products will be filtered by the selected supplier</p>
+                </div>
+              ) : filteredProducts.length === 0 ? (
                 <div className="h-full flex flex-col items-center justify-center text-content-muted">
                   <p className="text-sm">
-                    No products found for "{productSearch}"
+                    {productSearch
+                      ? `No products found for "${productSearch}"`
+                      : "This supplier has no available products. Add products in Suppliers page."}
                   </p>
                 </div>
               ) : (
@@ -442,7 +476,7 @@ const Purchases = () => {
                     <button
                       key={product._id}
                       type="button"
-                      onClick={() => addProductToCart(product)}
+                      onClick={() => addProductToCart(product, product._supplierCostPrice)}
                       className="p-3 border border-divider rounded-xl bg-surface hover:border-primary-500 hover:shadow-md transition-all text-left group"
                     >
                       <div className="font-semibold text-content group-hover:text-primary-600 truncate mb-1">
@@ -453,7 +487,7 @@ const Purchases = () => {
                       </div>
                       <div className="flex justify-between items-end">
                         <span className="font-bold text-content">
-                          Cost: {product.costPrice ? product.costPrice.toFixed(2) : '0.00'}
+                          Cost: {(product._supplierCostPrice ?? product.costPrice ?? 0).toFixed(2)}
                         </span>
                         <span className="text-xs bg-primary-50 text-primary-700 px-2 py-0.5 rounded-full font-medium">
                           Add
