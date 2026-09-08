@@ -1,8 +1,8 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "https://super-store-erp.onrender.com/api/v1",
-  withCredentials: true, // Required to send the HTTP-only access token cookie
+  baseURL: "/api/v1", // Requests go through Netlify proxy → Render (fixes cookie blocking)
+  withCredentials: true,
 });
 
 // Intercept responses to handle 401 Unauthorized globally
