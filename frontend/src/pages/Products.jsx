@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { productApi } from "../api/product.api";
+import { supplierApi } from "../api/supplier.api";
 import { useToast } from "../components/ui/Toast";
 import PageHeader from "../components/ui/PageHeader";
 import DataTable from "../components/ui/DataTable";
@@ -16,6 +17,7 @@ const Products = () => {
 
   const toast = useToast();
   const [products, setProducts] = useState([]);
+  const [suppliers, setSuppliers] = useState([]);
   const [loading, setLoading] = useState(true);
 
   // Modal state
@@ -32,6 +34,7 @@ const Products = () => {
     unit: "Piece",
     costPrice: 0,
     sellingPrice: 0,
+    supplierId: "",
     isActive: true,
   });
   const [submitting, setSubmitting] = useState(false);
@@ -39,8 +42,12 @@ const Products = () => {
   const fetchData = async () => {
     try {
       setLoading(true);
-      const productsRes = await productApi.getProducts();
+      const [productsRes, suppliersRes] = await Promise.all([
+        productApi.getProducts(),
+        supplierApi.getSuppliers(),
+      ]);
       setProducts(productsRes.data.data);
+      setSuppliers(suppliersRes.data.data);
     } catch (err) {
       toast.error("Failed to load data");
     } finally {
@@ -62,6 +69,7 @@ const Products = () => {
       unit: "Piece",
       costPrice: 0,
       sellingPrice: 0,
+      supplierId: "",
       isActive: true,
     });
     setModalOpen(true);
@@ -77,6 +85,7 @@ const Products = () => {
       unit: product.unit || "Piece",
       costPrice: product.costPrice || 0,
       sellingPrice: product.sellingPrice || 0,
+      supplierId: product.supplierId?._id || product.supplierId || "",
       isActive: product.isActive !== false,
     });
     setModalOpen(true);
@@ -104,6 +113,7 @@ const Products = () => {
     e.preventDefault();
     if (!form.name.trim()) return toast.error("Product name is required");
     if (!form.sku.trim()) return toast.error("SKU is required");
+    if (!form.supplierId) return toast.error("Supplier is required");
 
     setSubmitting(true);
     try {
@@ -174,12 +184,11 @@ const Products = () => {
     },
     {
       key: "supplier",
-      header: "Category / Unit",
+      header: "Supplier",
       render: (row) => (
-        <div className="flex flex-col gap-0.5">
-          <span className="text-sm text-content-muted">{row.category || "Uncategorized"}</span>
-          <span className="text-xs text-content-subtle">{row.unit}</span>
-        </div>
+        <span className="text-sm text-content-muted">
+          {row.supplierId?.name || "Unknown"}
+        </span>
       ),
     },
     {
@@ -404,6 +413,25 @@ const Products = () => {
               />
             </div>
 
+            <div className="space-y-1.5 md:col-span-2">
+              <label className="text-sm font-medium text-content">
+                Supplier *
+              </label>
+              <select
+                name="supplierId"
+                value={form.supplierId}
+                onChange={handleInputChange}
+                required
+                className="w-full px-3 py-2 bg-surface border border-divider rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-colors"
+              >
+                <option value="">Select a supplier</option>
+                {suppliers.map((supplier) => (
+                  <option key={supplier._id} value={supplier._id}>
+                    {supplier.name}
+                  </option>
+                ))}
+              </select>
+            </div>
 
             <div className="md:col-span-2 flex items-center gap-3 pt-2">
               <label className="relative inline-flex items-center cursor-pointer">

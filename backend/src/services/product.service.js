@@ -7,12 +7,14 @@ export const createProduct = async (productData) => {
 
 export const getProducts = async () => {
   return await Product.find()
+    .populate("supplierId", "name email phone personName")
     .populate("createdBy", "firstName lastName")
     .sort({ createdAt: -1 });
 };
 
 export const getProductById = async (id) => {
   const product = await Product.findById(id)
+    .populate("supplierId", "name email phone personName")
     .populate("createdBy", "firstName lastName");
 
   if (!product) {

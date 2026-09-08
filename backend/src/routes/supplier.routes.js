@@ -5,8 +5,6 @@ import {
   getSupplierById,
   updateSupplier,
   deleteSupplier,
-  getSupplierProducts,
-  updateSupplierProducts,
 } from "../controllers/supplier.controller.js";
 import { protect, authorize } from "../middlewares/auth.middleware.js";
 
@@ -24,10 +22,5 @@ router
   .get(authorize("supplier:read"), getSupplierById)
   .put(authorize("supplier:update"), updateSupplier)
   .delete(authorize("supplier:delete"), deleteSupplier);
-
-router
-  .route("/:id/products")
-  .get(authorize("supplier:read"), getSupplierProducts)
-  .put(authorize("supplier:update"), updateSupplierProducts);
 
 export default router;
