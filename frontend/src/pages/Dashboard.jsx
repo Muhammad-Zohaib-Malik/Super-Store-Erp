@@ -13,15 +13,6 @@ import {
   ArrowDownRight,
   RotateCcw,
 } from "lucide-react";
-import {
-  AreaChart,
-  Area,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-} from "recharts";
 
 function KPICard({
   label,
@@ -191,86 +182,7 @@ const Dashboard = () => {
       </div>
 
       {/* Content sections */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <div className="lg:col-span-2 bg-surface border border-divider rounded-lg p-5">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-sm font-semibold text-content">
-              Sales Overview
-            </h2>
-            <div className="flex gap-1">
-              {["7D", "30D", "3M", "12M"].map((p) => (
-                <button
-                  key={p}
-                  onClick={() => setPeriod(p)}
-                  className={`px-2.5 py-1 text-xs font-medium rounded-md transition-colors ${
-                    period === p
-                      ? "bg-primary-600 text-white"
-                      : "text-content-muted hover:bg-surface-hover"
-                  }`}
-                >
-                  {p}
-                </button>
-              ))}
-            </div>
-          </div>
-          <div className="h-72 mt-2 w-full">
-            {data.salesOverview && data.salesOverview.length > 0 ? (
-              <ResponsiveContainer width="100%" height="100%">
-                <AreaChart
-                  data={data.salesOverview}
-                  margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
-                >
-                  <defs>
-                    <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#4f46e5" stopOpacity={0.3} />
-                      <stop offset="95%" stopColor="#4f46e5" stopOpacity={0} />
-                    </linearGradient>
-                  </defs>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="currentColor" className="text-divider/30" />
-                  <XAxis 
-                    dataKey="date" 
-                    axisLine={false} 
-                    tickLine={false} 
-                    tick={{ fill: "currentColor", fontSize: 12 }}
-                    className="text-content-muted"
-                    dy={10}
-                  />
-                  <YAxis 
-                    axisLine={false} 
-                    tickLine={false} 
-                    tick={{ fill: "currentColor", fontSize: 12 }}
-                    className="text-content-muted"
-                    tickFormatter={(value) => `PKR ${value}`}
-                  />
-                  <Tooltip
-                    contentStyle={{
-                      backgroundColor: "var(--color-surface)",
-                      borderColor: "var(--color-divider)",
-                      borderRadius: "0.75rem",
-                      boxShadow: "var(--shadow-elevated)",
-                      color: "var(--color-content)",
-                    }}
-                    itemStyle={{ color: "var(--color-content)" }}
-                    formatter={(value) => [`PKR ${value}`, "Revenue"]}
-                  />
-                  <Area
-                    type="monotone"
-                    dataKey="revenue"
-                    stroke="#4f46e5"
-                    strokeWidth={3}
-                    fillOpacity={1}
-                    fill="url(#colorRevenue)"
-                    activeDot={{ r: 6, strokeWidth: 0, fill: "#4f46e5" }}
-                  />
-                </AreaChart>
-              </ResponsiveContainer>
-            ) : (
-              <div className="h-full flex items-center justify-center text-sm text-content-subtle border border-dashed border-divider rounded-xl">
-                No sales data available for the selected period
-              </div>
-            )}
-          </div>
-        </div>
+      <div className="grid grid-cols-1 gap-4">
 
         <div className="bg-surface border border-divider rounded-lg p-5">
           <h2 className="text-sm font-semibold text-content mb-4">
