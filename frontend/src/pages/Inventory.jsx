@@ -155,11 +155,32 @@ const Inventory = () => {
 
   const handleTransferInputChange = (e) => {
     const { name, value } = e.target;
-    setTransferForm((f) => ({
-      ...f,
-      [name]: name === "quantity" ? Number(value) : value,
-    }));
+    setTransferForm((f) => {
+      const newForm = {
+        ...f,
+        [name]: name === "quantity" ? Number(value) : value,
+      };
+      if (name === "fromWarehouseId") {
+        newForm.productId = "";
+        newForm.quantity = 1;
+      }
+      return newForm;
+    });
   };
+
+  const availableInventories = transferForm.fromWarehouseId
+    ? inventories.filter(
+        (inv) =>
+          (inv.warehouseId?._id || inv.warehouseId) === transferForm.fromWarehouseId &&
+          inv.quantity > 0 &&
+          inv.isActive !== false
+      )
+    : [];
+
+  const selectedInventory = availableInventories.find(
+    (inv) => (inv.productId?._id || inv.productId) === transferForm.productId
+  );
+  const maxQuantity = selectedInventory ? selectedInventory.quantity : "";
 
   const handleTransferSubmit = async (e) => {
     e.preventDefault();
@@ -613,26 +634,6 @@ const Inventory = () => {
           onSubmit={handleTransferSubmit}
           className="p-5 flex flex-col gap-4"
         >
-          <div className="space-y-1.5">
-            <label className="text-sm font-medium text-content">
-              Product *
-            </label>
-            <select
-              name="productId"
-              value={transferForm.productId}
-              onChange={handleTransferInputChange}
-              required
-              className="w-full px-3 py-2 bg-surface border border-divider rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-colors"
-            >
-              <option value="">Select a Product</option>
-              {products.map((p) => (
-                <option key={p._id} value={p._id}>
-                  {p.name} ({p.sku})
-                </option>
-              ))}
-            </select>
-          </div>
-
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1.5">
               <label className="text-sm font-medium text-content">
@@ -676,17 +677,50 @@ const Inventory = () => {
 
           <div className="space-y-1.5">
             <label className="text-sm font-medium text-content">
+              Product *
+            </label>
+            <select
+              name="productId"
+              value={transferForm.productId}
+              onChange={handleTransferInputChange}
+              required
+              disabled={!transferForm.fromWarehouseId}
+              className="w-full px-3 py-2 bg-surface border border-divider rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <option value="">
+                {transferForm.fromWarehouseId
+                  ? "Select a Product"
+                  : "Select Source Warehouse First"}
+              </option>
+              {availableInventories.map((inv) => (
+                <option key={inv.productId?._id} value={inv.productId?._id}>
+                  {inv.productId?.name} ({inv.productId?.sku}) - Available: {inv.quantity}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="space-y-1.5">
+            <label className="text-sm font-medium text-content">
               Quantity to Transfer *
             </label>
-            <input
-              type="number"
-              name="quantity"
-              value={transferForm.quantity}
-              onChange={handleTransferInputChange}
-              min="1"
-              required
-              className="w-full px-3 py-2 bg-surface border border-divider rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-colors"
-            />
+            <div className="flex items-center gap-2">
+              <input
+                type="number"
+                name="quantity"
+                value={transferForm.quantity}
+                onChange={handleTransferInputChange}
+                min="1"
+                max={maxQuantity || ""}
+                required
+                className="w-full px-3 py-2 bg-surface border border-divider rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-colors"
+              />
+              {maxQuantity !== "" && (
+                <span className="text-xs font-medium text-content-subtle whitespace-nowrap">
+                  Max: {maxQuantity}
+                </span>
+              )}
+            </div>
           </div>
 
           <div className="space-y-1.5">
