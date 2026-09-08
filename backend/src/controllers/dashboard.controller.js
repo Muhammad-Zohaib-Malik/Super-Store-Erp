@@ -75,6 +75,38 @@ export const getDashboardKPIs = async (req, res) => {
       color: "bg-emerald-500",
     }));
 
+    // 7. Sales Overview (Last 7 Days)
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 6);
+    sevenDaysAgo.setHours(0, 0, 0, 0);
+
+    const salesOverviewAgg = await Sale.aggregate([
+      {
+        $match: {
+          createdAt: { $gte: sevenDaysAgo },
+        },
+      },
+      {
+        $group: {
+          _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
+          revenue: { $sum: "$totalAmount" },
+        },
+      },
+      { $sort: { _id: 1 } },
+    ]);
+
+    const salesOverview = [];
+    for (let i = 0; i < 7; i++) {
+      const d = new Date(sevenDaysAgo);
+      d.setDate(d.getDate() + i);
+      const dateStr = d.toISOString().split("T")[0];
+      const found = salesOverviewAgg.find((s) => s._id === dateStr);
+      salesOverview.push({
+        date: d.toLocaleDateString("en-US", { weekday: "short" }),
+        revenue: found ? found.revenue : 0,
+      });
+    }
+
     res.status(200).json({
       success: true,
       data: {
@@ -88,6 +120,7 @@ export const getDashboardKPIs = async (req, res) => {
         totalProducts,
         lowStockCount,
         recentActivity: activityFeed,
+        salesOverview,
       },
     });
   } catch (error) {
