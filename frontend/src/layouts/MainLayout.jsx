@@ -118,9 +118,9 @@ const MainLayout = () => {
   const currentTitle = pageTitles[location.pathname] || "Dashboard";
 
   const navLinkClass = ({ isActive }) =>
-    `group relative flex items-center cursor-pointer ${collapsed ? "justify-center" : "gap-3 px-3"} py-2.5 rounded-lg text-sm font-medium transition-all duration-150 ${
+    `group relative flex items-center cursor-pointer ${collapsed ? "justify-center" : "gap-3 px-3"} py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${
       isActive
-        ? "bg-primary-50 text-primary-600 dark:bg-primary-600/15 dark:text-primary-400"
+        ? "bg-primary-50 text-primary-600 shadow-sm ring-1 ring-primary-500/10 dark:bg-primary-600/15 dark:text-primary-400 dark:ring-primary-500/20"
         : "text-content-muted hover:text-content hover:bg-sidebar-hover"
     }`;
 
@@ -135,10 +135,10 @@ const MainLayout = () => {
           className={navLinkClass}
           onClick={() => setMobileOpen(false)}
         >
-          <Icon size={20} className="flex-shrink-0" />
+          <Icon size={20} className={`flex-shrink-0 transition-transform duration-200 group-hover:scale-110`} />
           {!collapsed && <span className="truncate">{item.label}</span>}
           {collapsed && (
-            <div className="absolute left-full top-1/2 -translate-y-1/2 ml-2 px-2 py-1.5 bg-slate-900 dark:bg-slate-700 text-white text-xs font-medium rounded opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap z-50">
+            <div className="absolute left-full top-1/2 -translate-y-1/2 ml-2 px-2 py-1.5 bg-slate-900 dark:bg-slate-700 text-white text-xs font-medium rounded opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap z-50 shadow-elevated">
               {item.label}
             </div>
           )}
@@ -151,11 +151,11 @@ const MainLayout = () => {
     <div className="flex flex-col h-full">
       {/* Brand */}
       <div className="h-16 flex items-center px-4 border-b border-divider flex-shrink-0">
-        <div className="w-8 h-8 bg-primary-600 rounded-lg flex items-center justify-center flex-shrink-0">
+        <div className="w-8 h-8 bg-gradient-to-br from-primary-500 to-primary-700 rounded-xl flex items-center justify-center flex-shrink-0 shadow-soft">
           <span className="font-bold text-sm text-white">E</span>
         </div>
         {!collapsed && (
-          <span className="ml-3 text-base font-semibold text-content tracking-tight">
+          <span className="ml-3 text-base font-bold text-content tracking-tight">
             ERP System
           </span>
         )}
@@ -165,21 +165,21 @@ const MainLayout = () => {
       <nav className="flex-1 overflow-y-auto overflow-x-hidden px-3 py-4 no-scrollbar">
         <div className="mb-2">
           {!collapsed && (
-            <span className="px-3 text-[10px] font-semibold uppercase tracking-widest text-content-muted">
+            <span className="px-3 text-[10px] font-bold uppercase tracking-widest text-content-muted">
               Main
             </span>
           )}
-          <ul className="mt-2 space-y-0.5">{mainNav.map(renderNavItem)}</ul>
+          <ul className="mt-2 space-y-1">{mainNav.map(renderNavItem)}</ul>
         </div>
 
         {adminNav.some(canSee) && (
-          <div className="mt-6">
+          <div className="mt-8">
             {!collapsed && (
-              <span className="px-3 text-[10px] font-semibold uppercase tracking-widest text-content-muted">
+              <span className="px-3 text-[10px] font-bold uppercase tracking-widest text-content-muted">
                 Administration
               </span>
             )}
-            <ul className="mt-2 space-y-0.5">{adminNav.map(renderNavItem)}</ul>
+            <ul className="mt-2 space-y-1">{adminNav.map(renderNavItem)}</ul>
           </div>
         )}
       </nav>
@@ -188,19 +188,19 @@ const MainLayout = () => {
       <div className="flex-shrink-0 border-t border-divider p-3">
         <button
           onClick={handleLogout}
-          className={`w-full flex items-center cursor-pointer ${collapsed ? "justify-center" : "gap-3 px-3"} py-2.5 rounded-lg text-sm font-medium text-content-muted hover:text-red-600 hover:bg-red-50 dark:hover:text-red-400 dark:hover:bg-red-500/10 transition-colors group relative`}
+          className={`w-full flex items-center cursor-pointer ${collapsed ? "justify-center" : "gap-3 px-3"} py-2.5 rounded-xl text-sm font-medium text-content-muted hover:text-red-600 hover:bg-red-50 dark:hover:text-red-400 dark:hover:bg-red-500/10 transition-colors group relative`}
         >
-          <LogOut size={20} className="flex-shrink-0" />
+          <LogOut size={20} className="flex-shrink-0 transition-transform duration-200 group-hover:scale-110 group-hover:-translate-x-0.5" />
           {!collapsed && <span>Logout</span>}
           {collapsed && (
-            <div className="absolute left-full top-1/2 -translate-y-1/2 ml-2 px-2 py-1.5 bg-slate-900 dark:bg-slate-700 text-white text-xs font-medium rounded opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap z-50">
+            <div className="absolute left-full top-1/2 -translate-y-1/2 ml-2 px-2 py-1.5 bg-slate-900 dark:bg-slate-700 text-white text-xs font-medium rounded opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap z-50 shadow-elevated">
               Logout
             </div>
           )}
         </button>
         <button
           onClick={() => setCollapsed((c) => !c)}
-          className={`hidden md:flex w-full items-center cursor-pointer ${collapsed ? "justify-center" : "gap-3 px-3"} py-2.5 mt-1 rounded-lg text-sm font-medium text-content-muted hover:text-content hover:bg-sidebar-hover transition-colors group relative`}
+          className={`hidden md:flex w-full items-center cursor-pointer ${collapsed ? "justify-center" : "gap-3 px-3"} py-2.5 mt-1 rounded-xl text-sm font-medium text-content-muted hover:text-content hover:bg-sidebar-hover transition-colors group relative`}
         >
           <ChevronLeft
             size={20}
@@ -208,7 +208,7 @@ const MainLayout = () => {
           />
           {!collapsed && <span>Collapse</span>}
           {collapsed && (
-            <div className="absolute left-full top-1/2 -translate-y-1/2 ml-2 px-2 py-1.5 bg-slate-900 dark:bg-slate-700 text-white text-xs font-medium rounded opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap z-50">
+            <div className="absolute left-full top-1/2 -translate-y-1/2 ml-2 px-2 py-1.5 bg-slate-900 dark:bg-slate-700 text-white text-xs font-medium rounded opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap z-50 shadow-elevated">
               Expand
             </div>
           )}
@@ -218,11 +218,11 @@ const MainLayout = () => {
   );
 
   return (
-    <div className="flex h-screen bg-base overflow-hidden">
+    <div className="flex h-screen bg-base overflow-hidden selection:bg-primary-500/30">
       {/* Desktop Sidebar */}
       <aside
-        className={`sidebar-transition hidden md:flex flex-col bg-sidebar flex-shrink-0 relative z-30 ${
-          collapsed ? "w-[68px]" : "w-60"
+        className={`sidebar-transition hidden md:flex flex-col bg-sidebar flex-shrink-0 relative z-30 border-r border-divider/50 shadow-soft ${
+          collapsed ? "w-[68px]" : "w-64"
         }`}
       >
         <div className="flex-1 h-full flex flex-col min-h-0">
@@ -234,13 +234,13 @@ const MainLayout = () => {
       {mobileOpen && (
         <div className="md:hidden fixed inset-0 z-50 flex">
           <div
-            className="fixed inset-0 bg-black/50"
+            className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity"
             onClick={() => setMobileOpen(false)}
           />
-          <aside className="relative w-60 bg-sidebar flex flex-col z-50">
+          <aside className="relative w-64 bg-sidebar flex flex-col z-50 shadow-elevated">
             <button
               onClick={() => setMobileOpen(false)}
-              className="absolute top-4 right-3 p-1 rounded-lg text-content-subtle hover:text-white hover:bg-surface/10"
+              className="absolute top-4 right-3 p-1 rounded-lg text-content-subtle hover:text-content hover:bg-surface/10 transition-colors"
             >
               <X size={20} />
             </button>
@@ -250,9 +250,9 @@ const MainLayout = () => {
       )}
 
       {/* Main Area */}
-      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
+      <div className="flex-1 flex flex-col min-w-0 overflow-hidden relative">
         {/* Top Header */}
-        <header className="h-16 bg-surface border-b border-divider flex items-center justify-between px-4 md:px-6 flex-shrink-0">
+        <header className="h-16 bg-surface/80 backdrop-blur-md border-b border-divider/50 flex items-center justify-between px-4 md:px-8 flex-shrink-0 sticky top-0 z-20">
           <div className="flex items-center gap-3">
             <button
               onClick={() => setMobileOpen(true)}

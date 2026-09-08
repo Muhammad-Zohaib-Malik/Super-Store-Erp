@@ -74,7 +74,7 @@ export default function DataTable({
   if (loading) return <SkeletonTable rows={5} cols={columns.length} />;
 
   return (
-    <div className="bg-surface border border-divider rounded-lg overflow-hidden">
+    <div className="bg-surface border border-divider/50 rounded-xl shadow-soft overflow-hidden">
       {searchable && (
         <div className="px-4 py-3 border-b border-divider">
           <div className="relative max-w-xs">
@@ -90,7 +90,7 @@ export default function DataTable({
                 setSearch(e.target.value);
                 setPage(0);
               }}
-              className="w-full pl-9 pr-3 py-2 text-sm border border-divider rounded-lg bg-base focus:bg-surface focus:border-primary-400 focus:ring-1 focus:ring-primary-400 outline-none transition-colors"
+              className="w-full pl-9 pr-3 py-2 text-sm border border-divider/60 rounded-xl bg-base focus:bg-surface focus:border-primary-400 focus:ring-4 focus:ring-primary-500/10 outline-none transition-all duration-200"
             />
           </div>
         </div>
@@ -131,7 +131,7 @@ export default function DataTable({
                   ))}
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-divider/40">
                 {pagedData.map((row, i) => (
                   <tr
                     key={row._id || row.id || i}
@@ -167,7 +167,7 @@ export default function DataTable({
                 <button
                   onClick={() => setPage((p) => Math.max(0, p - 1))}
                   disabled={page === 0}
-                  className="p-1.5 rounded-md text-content-muted hover:bg-slate-200 disabled:opacity-40 disabled:cursor-not-allowed"
+                  className="p-1.5 rounded-lg text-content-muted hover:bg-surface-hover hover:text-content disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
                 >
                   <ChevronLeft size={16} />
                 </button>
@@ -186,7 +186,7 @@ export default function DataTable({
                     <button
                       key={pageNum}
                       onClick={() => setPage(pageNum)}
-                      className={`w-8 h-8 text-xs rounded-md font-medium ${page === pageNum ? "bg-primary-600 text-white" : "text-slate-600 hover:bg-slate-200"}`}
+                      className={`w-8 h-8 text-xs rounded-lg font-medium transition-colors ${page === pageNum ? "bg-primary-600 text-white shadow-sm" : "text-content-muted hover:bg-surface-hover hover:text-content"}`}
                     >
                       {pageNum + 1}
                     </button>
@@ -197,7 +197,7 @@ export default function DataTable({
                     setPage((p) => Math.min(totalPages - 1, p + 1))
                   }
                   disabled={page >= totalPages - 1}
-                  className="p-1.5 rounded-md text-content-muted hover:bg-slate-200 disabled:opacity-40 disabled:cursor-not-allowed"
+                  className="p-1.5 rounded-lg text-content-muted hover:bg-surface-hover hover:text-content disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
                 >
                   <ChevronRight size={16} />
                 </button>
