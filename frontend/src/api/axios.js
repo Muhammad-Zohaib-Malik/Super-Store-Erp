@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "https://super-store-erp.onrender.com/api/v1",
+  baseURL: "/api/v1",
   withCredentials: true, // Required to send the HTTP-only access token cookie
 });
 
