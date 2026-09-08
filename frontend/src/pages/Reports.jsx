@@ -28,7 +28,7 @@ import {
 
 const Reports = () => {
   const { user } = useAuth();
-  if (user?.role?.name !== "admin") {
+  if (user?.role?.name?.toLowerCase() !== "admin") {
     return <Navigate to="/" replace />;
   }
 

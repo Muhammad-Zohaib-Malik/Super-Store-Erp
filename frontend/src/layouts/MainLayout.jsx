@@ -95,7 +95,7 @@ const MainLayout = () => {
       return false;
     }
     if (item.adminOnly) {
-      return user?.role?.name === "admin";
+      return user?.role?.name?.toLowerCase() === "admin";
     }
     return item.always || (item.perm && hasPermission(item.perm));
   };
