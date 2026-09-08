@@ -2,6 +2,13 @@ import * as reportService from "../services/report.service.js";
 
 export const getSalesReport = async (req, res) => {
   try {
+    if (req.user?.role?.name?.toLowerCase() !== "admin") {
+      return res.status(403).json({
+        success: false,
+        message: "Access Denied: Only Admins can view this report.",
+      });
+    }
+
     const { startDate, endDate } = req.query;
 
     if (!startDate || !endDate) {
