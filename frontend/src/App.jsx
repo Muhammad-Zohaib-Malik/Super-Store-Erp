@@ -15,6 +15,7 @@ import Inventory from "./pages/Inventory";
 import Customers from "./pages/Customers";
 import ComingSoon from "./pages/ComingSoon";
 import Sales from "./pages/Sales";
+import Purchases from "./pages/Purchases";
 import Refunds from "./pages/Refunds";
 import { ThemeProvider } from "./contexts/ThemeContext";
 
@@ -110,7 +111,14 @@ function App() {
                     <Route path="/inventory" element={<Inventory />} />
                   </Route>
 
-                  <Route path="/purchases" element={<ComingSoon />} />
+                  <Route
+                    element={
+                      <ProtectedRoute requiredPermission="purchase:read" />
+                    }
+                  >
+                    <Route path="/purchases" element={<Purchases />} />
+                  </Route>
+
                   <Route path="/expenses" element={<ComingSoon />} />
                   <Route path="/reports" element={<ComingSoon />} />
                 </Route>
