@@ -74,6 +74,7 @@ const Dashboard = () => {
   const toast = useToast();
 
   const [loading, setLoading] = useState(true);
+  const [period, setPeriod] = useState("30D");
   const [data, setData] = useState({
     totalSalesAmount: 0,
     grossSalesAmount: 0,
@@ -91,7 +92,8 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchKPIs = async () => {
       try {
-        const res = await dashboardApi.getKPIs();
+        setLoading(true);
+        const res = await dashboardApi.getKPIs(period);
         setData(res.data.data);
       } catch (err) {
         toast.error("Failed to load dashboard data");
@@ -100,7 +102,7 @@ const Dashboard = () => {
       }
     };
     fetchKPIs();
-  }, [toast]);
+  }, [toast, period]);
 
   const kpiData = [
     {
@@ -196,16 +198,17 @@ const Dashboard = () => {
               Sales Overview
             </h2>
             <div className="flex gap-1">
-              {["7D", "30D", "3M", "12M"].map((period) => (
+              {["7D", "30D", "3M", "12M"].map((p) => (
                 <button
-                  key={period}
+                  key={p}
+                  onClick={() => setPeriod(p)}
                   className={`px-2.5 py-1 text-xs font-medium rounded-md transition-colors ${
-                    period === "30D"
+                    period === p
                       ? "bg-primary-600 text-white"
                       : "text-content-muted hover:bg-surface-hover"
                   }`}
                 >
-                  {period}
+                  {p}
                 </button>
               ))}
             </div>

@@ -75,36 +75,63 @@ export const getDashboardKPIs = async (req, res) => {
       color: "bg-emerald-500",
     }));
 
-    // 7. Sales Overview (Last 7 Days)
-    const sevenDaysAgo = new Date();
-    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 6);
-    sevenDaysAgo.setHours(0, 0, 0, 0);
-
-    const salesOverviewAgg = await Sale.aggregate([
-      {
-        $match: {
-          createdAt: { $gte: sevenDaysAgo },
-        },
-      },
-      {
-        $group: {
-          _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
-          revenue: { $sum: "$totalAmount" },
-        },
-      },
-      { $sort: { _id: 1 } },
-    ]);
-
+    // 7. Sales Overview (Dynamic Period)
+    const period = req.query.period || "30D";
     const salesOverview = [];
-    for (let i = 0; i < 7; i++) {
-      const d = new Date(sevenDaysAgo);
-      d.setDate(d.getDate() + i);
-      const dateStr = d.toISOString().split("T")[0];
-      const found = salesOverviewAgg.find((s) => s._id === dateStr);
-      salesOverview.push({
-        date: d.toLocaleDateString("en-US", { weekday: "short" }),
-        revenue: found ? found.revenue : 0,
-      });
+    const now = new Date();
+
+    if (period === "12M") {
+      const twelveMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 11, 1);
+      const agg = await Sale.aggregate([
+        { $match: { createdAt: { $gte: twelveMonthsAgo } } },
+        {
+          $group: {
+            _id: { $dateToString: { format: "%Y-%m", date: "$createdAt" } },
+            revenue: { $sum: "$totalAmount" },
+          },
+        },
+      ]);
+
+      for (let i = 0; i < 12; i++) {
+        const d = new Date(now.getFullYear(), now.getMonth() - 11 + i, 1);
+        const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+        const found = agg.find((s) => s._id === key);
+        salesOverview.push({
+          date: d.toLocaleDateString("en-US", { month: "short", year: "numeric" }),
+          revenue: found ? found.revenue : 0,
+        });
+      }
+    } else {
+      let days = period === "7D" ? 7 : period === "3M" ? 90 : 30;
+      const startDate = new Date();
+      startDate.setDate(startDate.getDate() - (days - 1));
+      startDate.setHours(0, 0, 0, 0);
+
+      const agg = await Sale.aggregate([
+        { $match: { createdAt: { $gte: startDate } } },
+        {
+          $group: {
+            _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
+            revenue: { $sum: "$totalAmount" },
+          },
+        },
+      ]);
+
+      for (let i = 0; i < days; i++) {
+        const d = new Date(startDate);
+        d.setDate(d.getDate() + i);
+        const key = d.toISOString().split("T")[0];
+        const found = agg.find((s) => s._id === key);
+
+        let dateLabel = d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+        if (period === "7D") {
+          dateLabel = d.toLocaleDateString("en-US", { weekday: "short" });
+        }
+        salesOverview.push({
+          date: dateLabel,
+          revenue: found ? found.revenue : 0,
+        });
+      }
     }
 
     res.status(200).json({

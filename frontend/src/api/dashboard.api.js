@@ -1,5 +1,5 @@
 import api from "./axios";
 
 export const dashboardApi = {
-  getKPIs: () => api.get("/dashboard/kpis"),
+  getKPIs: (period = "30D") => api.get(`/dashboard/kpis?period=${period}`),
 };
