@@ -17,12 +17,15 @@ import transferRoutes from "./src/routes/transfer.routes.js";
 import db from "./src/config/db.js";
 
 const app = express();
+app.set("trust proxy", 1);
 
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-app.use(cors({ origin: "https://super-store-erp.netlify.app", credentials: true }));
+app.use(
+  cors({ origin: "https://super-store-erp.netlify.app", credentials: true }),
+);
 app.use(helmet());
 
 // Routes
