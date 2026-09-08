@@ -22,6 +22,13 @@ const saleItemSchema = new Schema(
       min: 0,
     },
 
+    unitCost: {
+      type: Number,
+      required: true,
+      min: 0,
+      default: 0,
+    },
+
     subtotal: {
       type: Number,
       required: true,

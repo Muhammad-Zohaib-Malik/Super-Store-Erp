@@ -14,6 +14,7 @@ export const createSale = async (saleData) => {
   }
 
   // Pre-flight check: ensure enough stock exists for all items
+  const enrichedItems = [];
   for (const item of items) {
     const product = await Product.findById(item.productId);
     if (product && product.isActive === false) {
@@ -34,11 +35,15 @@ export const createSale = async (saleData) => {
     }
 
     if (inventory.quantity < item.quantity) {
-      const product = await Product.findById(item.productId);
       throw new Error(
         `Insufficient stock for ${product ? product.name : item.productId}. Available: ${inventory.quantity}, Requested: ${item.quantity}`,
       );
     }
+
+    enrichedItems.push({
+      ...item,
+      unitCost: product ? product.costPrice || 0 : 0,
+    });
   }
 
   // Deduct stock
@@ -49,6 +54,7 @@ export const createSale = async (saleData) => {
     );
   }
 
+  saleData.items = enrichedItems;
   const sale = await Sale.create(saleData);
   return sale;
 };

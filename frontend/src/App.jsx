@@ -17,6 +17,7 @@ import ComingSoon from "./pages/ComingSoon";
 import Sales from "./pages/Sales";
 import Purchases from "./pages/Purchases";
 import Refunds from "./pages/Refunds";
+import Reports from "./pages/Reports";
 import { ThemeProvider } from "./contexts/ThemeContext";
 
 function App() {
@@ -120,7 +121,11 @@ function App() {
                   </Route>
 
                   <Route path="/expenses" element={<ComingSoon />} />
-                  <Route path="/reports" element={<ComingSoon />} />
+                  <Route
+                    element={<ProtectedRoute forbiddenRoles={["Cashier", "Manager", "Staff"]} />}
+                  >
+                    <Route path="/reports" element={<Reports />} />
+                  </Route>
                 </Route>
               </Route>
 

@@ -75,7 +75,7 @@ const MainLayout = () => {
       perm: "inventory:read",
     },
     { to: "/expenses", label: "Expenses", icon: Receipt, perm: "sale:read" },
-    { to: "/reports", label: "Reports", icon: BarChart3, perm: "report:read" },
+    { to: "/reports", label: "Reports", icon: BarChart3, adminOnly: true },
   ];
 
   const adminNav = [
@@ -93,6 +93,9 @@ const MainLayout = () => {
   const canSee = (item) => {
     if (isCashier && ["/", "/warehouses", "/inventory"].includes(item.to)) {
       return false;
+    }
+    if (item.adminOnly) {
+      return user?.role?.name === "admin";
     }
     return item.always || (item.perm && hasPermission(item.perm));
   };
