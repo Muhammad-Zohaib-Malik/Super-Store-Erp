@@ -711,7 +711,7 @@ const Inventory = () => {
                 value={transferForm.quantity}
                 onChange={handleTransferInputChange}
                 min="1"
-                max={maxQuantity || ""}
+                max={maxQuantity !== "" ? maxQuantity : undefined}
                 required
                 className="w-full px-3 py-2 bg-surface border border-divider rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-colors"
               />
