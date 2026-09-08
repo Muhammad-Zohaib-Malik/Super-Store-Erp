@@ -129,6 +129,10 @@ const Purchases = () => {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setForm((f) => ({ ...f, [name]: value }));
+    if (name === "supplierId") {
+      setCart([]);
+      setProductSearch("");
+    }
   };
 
   const addProductToCart = (product) => {
@@ -360,10 +364,18 @@ const Purchases = () => {
     },
   ];
 
+  // Filter products by selected supplier
+  const supplierProducts = form.supplierId
+    ? products.filter(
+        (p) =>
+          (p.supplierId?._id || p.supplierId) === form.supplierId,
+      )
+    : [];
+
   const filteredProducts =
     productSearch.trim() === ""
-      ? products
-      : products.filter(
+      ? supplierProducts
+      : supplierProducts.filter(
           (p) =>
             p.name.toLowerCase().includes(productSearch.toLowerCase()) ||
             p.sku.toLowerCase().includes(productSearch.toLowerCase()),
@@ -430,10 +442,18 @@ const Purchases = () => {
               </div>
             </div>
             <div className="flex-1 overflow-y-auto p-4">
-              {filteredProducts.length === 0 ? (
+              {!form.supplierId ? (
+                <div className="h-full flex flex-col items-center justify-center text-content-muted">
+                  <ShoppingBag className="w-10 h-10 mb-3 opacity-20" />
+                  <p className="text-sm font-medium">Select a supplier first</p>
+                  <p className="text-xs mt-1 text-content-subtle">Products will appear based on the selected supplier</p>
+                </div>
+              ) : filteredProducts.length === 0 ? (
                 <div className="h-full flex flex-col items-center justify-center text-content-muted">
                   <p className="text-sm">
-                    No products found for "{productSearch}"
+                    {productSearch
+                      ? `No products found for "${productSearch}"`
+                      : "No products found for this supplier"}
                   </p>
                 </div>
               ) : (
