@@ -44,8 +44,8 @@ const RolesPermissions = () => {
       ]);
       setRoles(rolesRes.data.data);
       setUsers(usersRes.data.data);
-    } catch {
-      toast.error("Failed to load roles");
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Failed to load roles");
     } finally {
       setLoading(false);
     }

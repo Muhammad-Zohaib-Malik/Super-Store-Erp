@@ -99,7 +99,7 @@ const Purchases = () => {
       ) {
         toast.error(`Failed to load ${err.message} data. Check permissions.`);
       } else {
-        toast.error("Failed to load purchases data");
+        toast.error(err.response?.data?.message || "Failed to load purchases data");
       }
     } finally {
       setLoading(false);

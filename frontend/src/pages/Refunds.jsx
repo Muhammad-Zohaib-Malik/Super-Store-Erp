@@ -25,7 +25,7 @@ const Refunds = () => {
       const res = await returnApi.getReturns();
       setReturns(res.data || []);
     } catch (err) {
-      toast.error("Failed to load refunds data");
+      toast.error(err.response?.data?.message || "Failed to load refunds data");
     } finally {
       setLoading(false);
     }

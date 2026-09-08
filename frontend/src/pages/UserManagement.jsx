@@ -44,7 +44,7 @@ const UserManagement = () => {
       setUsers(usersRes.data.data);
       setRoles(rolesRes.data.data);
     } catch (err) {
-      toast.error("Failed to load users");
+      toast.error(err.response?.data?.message || "Failed to load users");
     } finally {
       setLoading(false);
     }

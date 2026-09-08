@@ -41,7 +41,7 @@ const Customers = () => {
       const res = await customerApi.getCustomers();
       setCustomers(res.data.data);
     } catch (err) {
-      toast.error("Failed to load customers");
+      toast.error(err.response?.data?.message || "Failed to load customers");
     } finally {
       setLoading(false);
     }
@@ -85,7 +85,7 @@ const Customers = () => {
       const res = await saleApi.getSales({ customerId: customer._id });
       setCustomerSales(res.data.data);
     } catch (err) {
-      toast.error("Failed to load purchase history");
+      toast.error(err.response?.data?.message || "Failed to load purchase history");
     } finally {
       setLoadingHistory(false);
     }

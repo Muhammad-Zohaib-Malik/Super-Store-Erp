@@ -49,7 +49,7 @@ const Products = () => {
       setProducts(productsRes.data.data);
       setSuppliers(suppliersRes.data.data);
     } catch (err) {
-      toast.error("Failed to load data");
+      toast.error(err.response?.data?.message || "Failed to load data");
     } finally {
       setLoading(false);
     }

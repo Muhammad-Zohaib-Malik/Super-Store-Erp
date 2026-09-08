@@ -74,7 +74,7 @@ const Inventory = () => {
       setProducts(prodRes.data.data);
       setWarehouses(wareRes.data.data);
     } catch (err) {
-      toast.error("Failed to load inventory data");
+      toast.error(err.response?.data?.message || "Failed to load inventory data");
     } finally {
       setLoading(false);
     }
@@ -197,7 +197,7 @@ const Inventory = () => {
       const res = await transferApi.getTransfers();
       setTransfers(res.data.data);
     } catch (err) {
-      toast.error("Failed to load transfer history");
+      toast.error(err.response?.data?.message || "Failed to load transfer history");
     } finally {
       setLoadingHistory(false);
     }

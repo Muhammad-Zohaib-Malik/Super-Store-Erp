@@ -91,7 +91,7 @@ const Dashboard = () => {
         const res = await dashboardApi.getKPIs(period);
         setData(res.data.data);
       } catch (err) {
-        toast.error("Failed to load dashboard data");
+        toast.error(err.response?.data?.message || "Failed to load dashboard data");
       } finally {
         setLoading(false);
       }

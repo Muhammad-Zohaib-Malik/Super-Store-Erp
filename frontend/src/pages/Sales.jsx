@@ -130,7 +130,7 @@ const Sales = () => {
       ) {
         toast.error(`Failed to load ${err.message} data. Check permissions.`);
       } else {
-        toast.error("Failed to load sales data");
+        toast.error(err.response?.data?.message || "Failed to load sales data");
       }
     } finally {
       setLoading(false);

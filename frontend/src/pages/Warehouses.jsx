@@ -41,7 +41,7 @@ const Warehouses = () => {
       });
       setWarehouseInventory(res.data.data);
     } catch (err) {
-      toast.error("Failed to load warehouse inventory");
+      toast.error(err.response?.data?.message || "Failed to load warehouse inventory");
     } finally {
       setInventoryLoading(false);
     }
@@ -75,7 +75,7 @@ const Warehouses = () => {
         }
       }
     } catch (err) {
-      toast.error("Failed to load warehouse data");
+      toast.error(err.response?.data?.message || "Failed to load warehouse data");
     } finally {
       setLoading(false);
     }

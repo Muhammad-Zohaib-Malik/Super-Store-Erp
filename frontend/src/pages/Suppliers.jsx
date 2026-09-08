@@ -40,7 +40,7 @@ const Suppliers = () => {
       const res = await supplierApi.getSuppliers();
       setSuppliers(res.data.data);
     } catch (err) {
-      toast.error("Failed to load suppliers");
+      toast.error(err.response?.data?.message || "Failed to load suppliers");
     } finally {
       setLoading(false);
     }

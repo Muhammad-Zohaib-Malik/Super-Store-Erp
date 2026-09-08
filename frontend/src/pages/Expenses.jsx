@@ -51,7 +51,7 @@ const Expenses = () => {
       const res = await expenseApi.getAll();
       setExpenses(res.data.data);
     } catch (err) {
-      toast.error("Failed to load expenses");
+      toast.error(err.response?.data?.message || "Failed to load expenses");
     } finally {
       setLoading(false);
     }
