@@ -28,10 +28,6 @@ import {
 
 const Reports = () => {
   const { user } = useAuth();
-  if (user?.role?.name?.toLowerCase() !== "admin") {
-    return <Navigate to="/" replace />;
-  }
-
   const toast = useToast();
   const [loading, setLoading] = useState(false);
   const [reportData, setReportData] = useState(null);
@@ -248,7 +244,10 @@ const Reports = () => {
                       formatter={(value) => formatCurrency(value)}
                       contentStyle={{ borderRadius: "8px", border: "none" }}
                     />
-                    <Legend iconType="circle" wrapperStyle={{ paddingTop: "20px" }} />
+                    <Legend
+                      iconType="circle"
+                      wrapperStyle={{ paddingTop: "20px" }}
+                    />
                     <Line
                       type="monotone"
                       dataKey="revenue"
@@ -341,7 +340,9 @@ const Reports = () => {
                             #{index + 1}
                           </span>
                           <div>
-                            <p className="font-semibold text-content">{p.name}</p>
+                            <p className="font-semibold text-content">
+                              {p.name}
+                            </p>
                             <p className="text-xs text-content-subtle">
                               SKU: {p.sku}
                             </p>

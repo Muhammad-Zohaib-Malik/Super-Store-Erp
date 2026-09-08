@@ -122,7 +122,7 @@ function App() {
 
                   <Route path="/expenses" element={<ComingSoon />} />
                   <Route
-                    element={<ProtectedRoute forbiddenRoles={["Cashier", "Manager", "Staff"]} />}
+                    element={<ProtectedRoute requiredPermission="report:read" />}
                   >
                     <Route path="/reports" element={<Reports />} />
                   </Route>
