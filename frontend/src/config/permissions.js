@@ -55,4 +55,9 @@ export const VALID_PERMISSIONS = [
   "return:read",
   "return:update",
   "return:delete",
+
+  "expense:create",
+  "expense:read",
+  "expense:update",
+  "expense:delete",
 ];

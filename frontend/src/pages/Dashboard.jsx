@@ -12,6 +12,8 @@ import {
   ArrowUpRight,
   ArrowDownRight,
   RotateCcw,
+  Wallet,
+  Receipt,
 } from "lucide-react";
 
 function KPICard({
@@ -69,6 +71,9 @@ const Dashboard = () => {
   const [data, setData] = useState({
     totalSalesAmount: 0,
     grossSalesAmount: 0,
+    grossProfit: 0,
+    netProfit: 0,
+    totalExpenses: 0,
     totalRefundAmount: 0,
     todaySalesAmount: 0,
     totalOrders: 0,
@@ -77,7 +82,6 @@ const Dashboard = () => {
     totalProducts: 0,
     lowStockCount: 0,
     recentActivity: [],
-    salesOverview: [],
   });
 
   useEffect(() => {
@@ -97,57 +101,78 @@ const Dashboard = () => {
 
   const kpiData = [
     {
-      label: "Net Sales",
-      value: `PKR ${data.totalSalesAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+      label: "Gross Sales",
+      value: `PKR ${(data.grossSalesAmount || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
       icon: DollarSign,
       iconBg: "bg-emerald-50",
       iconColor: "text-emerald-600",
     },
     {
-      label: "Total Refunded",
-      value: `PKR ${data.totalRefundAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
-      icon: RotateCcw,
-      iconBg: "bg-orange-50",
-      iconColor: "text-orange-600",
-    },
-    {
-      label: "Today's Net Sales",
-      value: `PKR ${data.todaySalesAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+      label: "Net Sales",
+      value: `PKR ${(data.totalSalesAmount || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
       icon: TrendingUp,
       iconBg: "bg-blue-50",
       iconColor: "text-blue-600",
     },
     {
+      label: "Gross Profit",
+      value: `PKR ${(data.grossProfit || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+      icon: Wallet,
+      iconBg: "bg-indigo-50",
+      iconColor: "text-indigo-600",
+    },
+    {
+      label: "Net Profit",
+      value: `PKR ${(data.netProfit || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+      icon: TrendingUp,
+      iconBg: "bg-emerald-50",
+      iconColor: "text-emerald-600",
+    },
+    {
+      label: "Total Expenses",
+      value: `PKR ${(data.totalExpenses || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+      icon: Receipt,
+      iconBg: "bg-rose-50",
+      iconColor: "text-rose-600",
+    },
+    {
+      label: "Total Refunded",
+      value: `PKR ${(data.totalRefundAmount || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+      icon: RotateCcw,
+      iconBg: "bg-orange-50",
+      iconColor: "text-orange-600",
+    },
+    {
       label: "Total Orders",
-      value: data.totalOrders.toLocaleString(),
+      value: (data.totalOrders || 0).toLocaleString(),
       icon: ShoppingCart,
       iconBg: "bg-violet-50",
       iconColor: "text-violet-600",
     },
     {
       label: "Total Returns",
-      value: data.totalReturnsCount.toLocaleString(),
+      value: (data.totalReturnsCount || 0).toLocaleString(),
       icon: RotateCcw,
       iconBg: "bg-orange-50",
       iconColor: "text-orange-600",
     },
     {
       label: "Total Customers",
-      value: data.totalCustomers.toLocaleString(),
+      value: (data.totalCustomers || 0).toLocaleString(),
       icon: Users,
       iconBg: "bg-amber-50",
       iconColor: "text-amber-600",
     },
     {
       label: "Total Products",
-      value: data.totalProducts.toLocaleString(),
+      value: (data.totalProducts || 0).toLocaleString(),
       icon: Package,
       iconBg: "bg-sky-50",
       iconColor: "text-sky-600",
     },
     {
       label: "Low Stock Items",
-      value: data.lowStockCount.toLocaleString(),
+      value: (data.lowStockCount || 0).toLocaleString(),
       icon: AlertTriangle,
       iconBg: "bg-red-50",
       iconColor: "text-red-600",

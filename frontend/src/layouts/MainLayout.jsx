@@ -74,7 +74,7 @@ const MainLayout = () => {
       icon: Warehouse,
       perm: "inventory:read",
     },
-    { to: "/expenses", label: "Expenses", icon: Receipt, perm: "sale:read" },
+    { to: "/expenses", label: "Expenses", icon: Receipt, perm: "expense:read" },
     { to: "/reports", label: "Reports", icon: BarChart3, perm: "report:read" },
   ];
 

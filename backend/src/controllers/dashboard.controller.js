@@ -3,6 +3,7 @@ import Customer from "../models/customer.model.js";
 import Product from "../models/product.model.js";
 import Inventory from "../models/inventory.model.js";
 import Return from "../models/return.model.js";
+import Expense from "../models/expense.model.js";
 
 export const getDashboardKPIs = async (req, res) => {
   try {
@@ -11,16 +12,28 @@ export const getDashboardKPIs = async (req, res) => {
     const returns = await Return.find();
 
     const totalOrders = sales.filter((s) => !s.isReturned).length;
+    
+    // Gross Sales (Total Revenue before refunds)
     const grossSalesAmount = sales.reduce(
       (sum, sale) => sum + (sale.totalAmount || 0),
       0,
     );
+    
+    // Total Cost of Goods Sold (COGS)
+    let totalCOGS = 0;
+    sales.forEach((sale) => {
+      sale.items.forEach((item) => {
+        totalCOGS += (item.quantity || 0) * (item.unitCost || 0);
+      });
+    });
+
     const totalRefundAmount = returns.reduce(
       (sum, ret) => sum + (ret.totalRefundAmount || 0),
       0,
     );
 
     const totalSalesAmount = grossSalesAmount - totalRefundAmount; // Net Sales
+    const grossProfit = totalSalesAmount - totalCOGS; // Gross Profit
     const totalReturnsCount = returns.length;
 
     // 2. Today's Sales
@@ -74,6 +87,11 @@ export const getDashboardKPIs = async (req, res) => {
       time: sale.createdAt,
       color: "bg-emerald-500",
     }));
+
+    // 7. Expenses
+    const expenses = await Expense.find();
+    const totalExpenses = expenses.reduce((sum, e) => sum + (e.amount || 0), 0);
+    const netProfit = grossProfit - totalExpenses;
 
     // 7. Sales Overview (Dynamic Period)
     const period = req.query.period || "30D";
@@ -138,7 +156,10 @@ export const getDashboardKPIs = async (req, res) => {
       success: true,
       data: {
         totalSalesAmount, // Net revenue
-        grossSalesAmount,
+        grossSalesAmount, // Total revenue before refunds
+        grossProfit, // Net Sales - COGS
+        netProfit, // Gross Profit - Expenses
+        totalExpenses,
         totalRefundAmount,
         todaySalesAmount, // Net today
         totalOrders,

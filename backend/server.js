@@ -16,6 +16,7 @@ import dashboardRoutes from "./src/routes/dashboard.routes.js";
 import transferRoutes from "./src/routes/transfer.routes.js";
 import purchaseRoutes from "./src/routes/purchase.routes.js";
 import reportRoutes from "./src/routes/report.routes.js";
+import expenseRoutes from "./src/routes/expense.routes.js";
 import db from "./src/config/db.js";
 
 const app = express();
@@ -45,6 +46,7 @@ app.use("/api/v1/dashboard", dashboardRoutes);
 app.use("/api/v1/transfers", transferRoutes);
 app.use("/api/v1/purchases", purchaseRoutes);
 app.use("/api/v1/reports", reportRoutes);
+app.use("/api/v1/expenses", expenseRoutes);
 
 // Basic route for testing
 app.get("/api/v1/health", (req, res) => {

@@ -48,6 +48,11 @@ export const VALID_PERMISSIONS = [
   "transfer:read",
   "transfer:update",
   "transfer:delete",
+  
+  "expense:create",
+  "expense:read",
+  "expense:update",
+  "expense:delete",
 
   "report:read",
 ];

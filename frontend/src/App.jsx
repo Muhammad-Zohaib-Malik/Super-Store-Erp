@@ -18,6 +18,7 @@ import Sales from "./pages/Sales";
 import Purchases from "./pages/Purchases";
 import Refunds from "./pages/Refunds";
 import Reports from "./pages/Reports";
+import Expenses from "./pages/Expenses";
 import { ThemeProvider } from "./contexts/ThemeContext";
 
 function App() {
@@ -120,7 +121,11 @@ function App() {
                     <Route path="/purchases" element={<Purchases />} />
                   </Route>
 
-                  <Route path="/expenses" element={<ComingSoon />} />
+                  <Route
+                    element={<ProtectedRoute requiredPermission="expense:read" />}
+                  >
+                    <Route path="/expenses" element={<Expenses />} />
+                  </Route>
                   <Route
                     element={<ProtectedRoute requiredPermission="report:read" />}
                   >
