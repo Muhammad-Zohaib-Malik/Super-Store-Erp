@@ -16,11 +16,13 @@ import {
   Search,
   Receipt,
   Printer,
+  Edit2,
 } from "lucide-react";
 
 const Purchases = () => {
   const { user, hasPermission } = useAuth();
   const canCreate = hasPermission("purchase:create");
+  const canUpdate = hasPermission("purchase:update");
   const canDelete = hasPermission("purchase:delete");
 
   const toast = useToast();
@@ -32,6 +34,7 @@ const Purchases = () => {
 
   // Modal state
   const [modalOpen, setModalOpen] = useState(false);
+  const [editingPurchase, setEditingPurchase] = useState(null);
   const [deleteConfirm, setDeleteConfirm] = useState(null);
   const [invoicePurchase, setInvoicePurchase] = useState(null);
 
@@ -108,6 +111,7 @@ const Purchases = () => {
   }, []);
 
   const openCreateModal = () => {
+    setEditingPurchase(null);
     setForm({
       supplierId: "",
       warehouseId: warehouses.length > 0 ? warehouses[0]._id : "",
@@ -119,6 +123,31 @@ const Purchases = () => {
       referenceNumber: "",
     });
     setCart([]);
+    setModalOpen(true);
+  };
+
+  const openEditModal = (purchase) => {
+    setEditingPurchase(purchase);
+    setForm({
+      supplierId: purchase.supplierId?._id || purchase.supplierId || "",
+      warehouseId: purchase.warehouseId?._id || purchase.warehouseId || "",
+      paymentMethod: purchase.paymentMethod || "bank_transfer",
+      paymentStatus: purchase.paymentStatus || "paid",
+      paidAmount: purchase.paidAmount || 0,
+      status: purchase.status || "received",
+      notes: purchase.notes || "",
+      referenceNumber: purchase.referenceNumber || "",
+    });
+    setCart(
+      purchase.items.map((item) => ({
+        productId: item.productId?._id || item.productId,
+        name: item.productId?.name || "Unknown Product",
+        quantity: item.quantity,
+        unitCost: item.unitCost,
+        subtotal: item.subtotal,
+      }))
+    );
+    setProductSearch("");
     setModalOpen(true);
   };
 
@@ -223,17 +252,24 @@ const Purchases = () => {
         })),
       };
 
-      const savedPurchase = await purchaseApi.createPurchase(purchaseData);
-      toast.success("Purchase recorded successfully");
-      closeModal();
-      fetchData();
+      if (editingPurchase) {
+        await purchaseApi.updatePurchase(editingPurchase._id, purchaseData);
+        toast.success("Purchase updated successfully");
+        closeModal();
+        fetchData();
+      } else {
+        const savedPurchase = await purchaseApi.createPurchase(purchaseData);
+        toast.success("Purchase recorded successfully");
+        closeModal();
+        fetchData();
 
-      // Auto-open invoice
-      try {
-        const fullPurchase = await purchaseApi.getPurchaseById(savedPurchase.data.data._id);
-        setInvoicePurchase(fullPurchase.data.data);
-      } catch (err) {
-        console.error(err);
+        // Auto-open invoice
+        try {
+          const fullPurchase = await purchaseApi.getPurchaseById(savedPurchase.data.data._id);
+          setInvoicePurchase(fullPurchase.data.data);
+        } catch (err) {
+          console.error(err);
+        }
       }
     } catch (err) {
       toast.error(err.response?.data?.message || "Operation failed");
@@ -346,6 +382,18 @@ const Purchases = () => {
             >
               <Receipt size={15} />
             </button>
+            {canUpdate && (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  openEditModal(row);
+                }}
+                className="p-1.5 rounded-md text-content-subtle hover:text-blue-600 hover:bg-blue-50 transition-colors"
+                title="Edit purchase"
+              >
+                <Edit2 size={15} />
+              </button>
+            )}
             {canDelete && (
               <button
                 onClick={(e) => {
@@ -423,7 +471,7 @@ const Purchases = () => {
       <Modal
         isOpen={modalOpen}
         onClose={closeModal}
-        title="New Purchase Order"
+        title={editingPurchase ? "Edit Purchase Order" : "New Purchase Order"}
         size="4xl"
       >
         {/* Top bar: Supplier + Warehouse */}
@@ -673,7 +721,9 @@ const Purchases = () => {
               >
                 {submitting
                   ? "Processing..."
-                  : `Save Purchase`}
+                  : editingPurchase
+                  ? "Update Purchase"
+                  : "Save Purchase"}
               </button>
             </div>
           </div>
