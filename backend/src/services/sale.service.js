@@ -56,7 +56,15 @@ export const createSale = async (saleData) => {
 
   saleData.items = enrichedItems;
   const sale = await Sale.create(saleData);
-  return sale;
+
+  const populatedSale = await Sale.findById(sale._id)
+    .populate("customerId", "name email phone")
+    .populate("warehouseId", "name location")
+    .populate("cashierId", "name email")
+    .populate("createdBy", "name email")
+    .populate("items.productId", "name sku price");
+
+  return populatedSale;
 };
 
 export const getSales = async (filters = {}) => {
