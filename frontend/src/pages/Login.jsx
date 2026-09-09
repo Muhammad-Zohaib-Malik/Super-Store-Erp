@@ -21,11 +21,7 @@ const Login = () => {
 
     try {
       const res = await login(email, password);
-      if (res?.user?.role?.name === "Cashier") {
-        navigate("/sales");
-      } else {
-        navigate("/");
-      }
+      navigate("/");
     } catch (err) {
       const msg = err.response?.data?.message || "Invalid email or password";
       setError(msg);

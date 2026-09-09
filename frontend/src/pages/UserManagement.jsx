@@ -339,9 +339,6 @@ const UserManagement = () => {
               <div className="flex gap-2">
                 {roles
                   .filter((role) => {
-                    if (!hasPermission("role:update")) {
-                      return role.name === "Cashier";
-                    }
                     return true;
                   })
                   .map((role) => (
@@ -349,7 +346,6 @@ const UserManagement = () => {
                       key={role._id}
                       type="button"
                       disabled={
-                        (editingUser && editingUser.role?.name === "Admin") ||
                         (editingUser && editingUser._id === currentUser?.id)
                       }
                       onClick={() => handleRoleChange(role._id)}
@@ -358,7 +354,6 @@ const UserManagement = () => {
                           ? "bg-primary-50 border-primary-300 text-primary-700"
                           : "border-divider text-slate-600 hover:bg-surface-hover"
                       } ${
-                        (editingUser && editingUser.role?.name === "Admin") ||
                         (editingUser && editingUser._id === currentUser?.id)
                           ? "opacity-60 cursor-not-allowed"
                           : ""

@@ -89,9 +89,6 @@ const MainLayout = () => {
   ];
 
   const canSee = (item) => {
-    if (item.adminOnly) {
-      return user?.role?.name?.toLowerCase() === "admin";
-    }
     if (item.always) return true;
     if (item.perms) {
       return hasAnyPermission(item.perms);
