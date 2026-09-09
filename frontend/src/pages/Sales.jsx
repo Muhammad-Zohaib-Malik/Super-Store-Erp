@@ -117,7 +117,7 @@ const Sales = () => {
         );
       }
 
-      setSales((salesRes.data.data || []).filter((s) => !s.isReturned));
+      setSales(salesRes.data.data || []);
       setProducts(mainShopProducts);
       setCustomers(customersRes?.data?.data || []);
       setWarehouses(allWarehouses);
@@ -417,7 +417,7 @@ const Sales = () => {
             >
               <Receipt size={15} />
             </button>
-            {canReturn && (
+            {canReturn && !row.isReturned && (
               <button
                 onClick={(e) => {
                   e.stopPropagation();
