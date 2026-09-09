@@ -27,7 +27,7 @@ import {
 } from "lucide-react";
 
 const MainLayout = () => {
-  const { user, logout, hasPermission } = useAuth();
+  const { user, logout, hasPermission, hasAnyPermission } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const { theme, toggleTheme } = useTheme();
@@ -72,7 +72,7 @@ const MainLayout = () => {
       to: "/inventory",
       label: "Inventory",
       icon: Warehouse,
-      perm: "inventory:read",
+      perms: ["inventory:read", "transfer:create", "transfer:read"],
     },
     { to: "/expenses", label: "Expenses", icon: Receipt, perm: "expense:read" },
     { to: "/reports", label: "Reports", icon: BarChart3, perm: "report:read" },
@@ -88,16 +88,15 @@ const MainLayout = () => {
     },
   ];
 
-  const isCashier = user?.role?.name === "Cashier";
-
   const canSee = (item) => {
-    if (isCashier && ["/", "/warehouses", "/inventory"].includes(item.to)) {
-      return false;
-    }
     if (item.adminOnly) {
       return user?.role?.name?.toLowerCase() === "admin";
     }
-    return item.always || (item.perm && hasPermission(item.perm));
+    if (item.always) return true;
+    if (item.perms) {
+      return hasAnyPermission(item.perms);
+    }
+    return item.perm && hasPermission(item.perm);
   };
 
   const pageTitles = {

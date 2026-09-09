@@ -34,11 +34,7 @@ function App() {
 
               <Route element={<ProtectedRoute />}>
                 <Route element={<MainLayout />}>
-                  <Route
-                    element={<ProtectedRoute forbiddenRoles={["Cashier"]} />}
-                  >
-                    <Route path="/" element={<Dashboard />} />
-                  </Route>
+                  <Route path="/" element={<Dashboard />} />
 
                   {/* Permission-based protected routes */}
                   <Route
@@ -85,10 +81,7 @@ function App() {
 
                   <Route
                     element={
-                      <ProtectedRoute
-                        requiredPermission="warehouse:read"
-                        forbiddenRoles={["Cashier"]}
-                      />
+                      <ProtectedRoute requiredPermission="warehouse:read" />
                     }
                   >
                     <Route path="/warehouses" element={<Warehouses />} />
@@ -105,8 +98,7 @@ function App() {
                   <Route
                     element={
                       <ProtectedRoute
-                        requiredPermission="inventory:read"
-                        forbiddenRoles={["Cashier"]}
+                        requiredPermissions={["inventory:read", "transfer:create", "transfer:read"]}
                       />
                     }
                   >
