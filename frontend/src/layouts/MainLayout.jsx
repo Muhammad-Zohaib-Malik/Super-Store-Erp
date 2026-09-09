@@ -89,6 +89,7 @@ const MainLayout = () => {
   ];
 
   const canSee = (item) => {
+    if (item.to === "/" && user?.role?.name === "Cashier") return false;
     if (item.always) return true;
     if (item.perms) {
       return hasAnyPermission(item.perms);

@@ -34,7 +34,9 @@ function App() {
 
               <Route element={<ProtectedRoute />}>
                 <Route element={<MainLayout />}>
-                  <Route path="/" element={<Dashboard />} />
+                  <Route element={<ProtectedRoute forbiddenRoles={["Cashier"]} />}>
+                    <Route path="/" element={<Dashboard />} />
+                  </Route>
 
                   {/* Permission-based protected routes */}
                   <Route
