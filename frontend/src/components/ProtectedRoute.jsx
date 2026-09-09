@@ -33,7 +33,7 @@ const ProtectedRoute = ({
   }
 
   if (forbiddenRoles.includes(user.role?.name)) {
-    if (user.role?.name === "Cashier") {
+    if (user.role?.name === "Cashier" || user.role?.name === "Manager") {
       return <Navigate to="/sales" replace />;
     }
     return <Navigate to="/" replace />;
