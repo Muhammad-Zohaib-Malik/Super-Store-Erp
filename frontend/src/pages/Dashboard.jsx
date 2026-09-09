@@ -101,18 +101,11 @@ const Dashboard = () => {
 
   const kpiData = [
     {
-      label: "Gross Sales",
+      label: "Total Revenue",
       value: `PKR ${(data.grossSalesAmount || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
       icon: DollarSign,
       iconBg: "bg-emerald-50",
       iconColor: "text-emerald-600",
-    },
-    {
-      label: "Net Sales",
-      value: `PKR ${(data.totalSalesAmount || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
-      icon: TrendingUp,
-      iconBg: "bg-blue-50",
-      iconColor: "text-blue-600",
     },
     {
       label: "Gross Profit",
@@ -135,13 +128,7 @@ const Dashboard = () => {
       iconBg: "bg-rose-50",
       iconColor: "text-rose-600",
     },
-    {
-      label: "Total Refunded",
-      value: `PKR ${(data.totalRefundAmount || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
-      icon: RotateCcw,
-      iconBg: "bg-orange-50",
-      iconColor: "text-orange-600",
-    },
+
     {
       label: "Total Orders",
       value: (data.totalOrders || 0).toLocaleString(),
