@@ -15,10 +15,12 @@ export default function DataTable({
   loading = false,
   searchable = true,
   searchPlaceholder = "Search...",
+  searchKey,
   pageSize = 10,
   emptyTitle,
   emptyDescription,
   emptyAction,
+  emptyState,
   onRowClick,
 }) {
   const [search, setSearch] = useState("");
@@ -29,17 +31,34 @@ export default function DataTable({
   const filteredData = useMemo(() => {
     if (!search.trim()) return data;
     const q = search.toLowerCase();
-    return data.filter((row) =>
-      columns.some((col) => {
-        const val = col.accessor
-          ? typeof col.accessor === "function"
-            ? col.accessor(row)
-            : row[col.accessor]
-          : "";
-        return String(val).toLowerCase().includes(q);
-      }),
-    );
-  }, [data, search, columns]);
+    
+    const deepSearch = (obj) => {
+      if (obj == null) return false;
+      if (typeof obj === "string" || typeof obj === "number") {
+        return String(obj).toLowerCase().includes(q);
+      }
+      if (typeof obj === "object") {
+        return Object.values(obj).some(deepSearch);
+      }
+      return false;
+    };
+
+    return data.filter((row) => {
+      if (searchKey && row[searchKey]) {
+        if (String(row[searchKey]).toLowerCase().includes(q)) return true;
+      }
+
+      const foundInColumns = columns.some((col) => {
+        if (!col.accessor) return false;
+        const val = typeof col.accessor === "function" ? col.accessor(row) : row[col.accessor];
+        return val != null && String(val).toLowerCase().includes(q);
+      });
+      
+      if (foundInColumns) return true;
+
+      return deepSearch(row);
+    });
+  }, [data, search, columns, searchKey]);
 
   const sortedData = useMemo(() => {
     if (!sortKey) return filteredData;
@@ -97,11 +116,20 @@ export default function DataTable({
       )}
 
       {pagedData.length === 0 ? (
-        <EmptyState
-          title={emptyTitle}
-          description={emptyDescription}
-          action={emptyAction}
-        />
+        emptyState ? (
+          <EmptyState
+            title={emptyState.title}
+            description={emptyState.description}
+            action={emptyState.action}
+            icon={emptyState.icon}
+          />
+        ) : (
+          <EmptyState
+            title={emptyTitle}
+            description={emptyDescription}
+            action={emptyAction}
+          />
+        )
       ) : (
         <>
           <div className="overflow-x-auto">

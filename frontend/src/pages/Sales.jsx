@@ -449,7 +449,7 @@ const Sales = () => {
 
   const filteredProducts =
     productSearch.trim() === ""
-      ? []
+      ? products
       : products.filter(
           (p) =>
             p.name.toLowerCase().includes(productSearch.toLowerCase()) ||
@@ -517,17 +517,12 @@ const Sales = () => {
               </div>
             </div>
             <div className="flex-1 overflow-y-auto p-4">
-              {productSearch.trim() === "" ? (
-                <div className="h-full flex flex-col items-center justify-center text-content-muted">
-                  <Search className="w-10 h-10 mb-3 opacity-20" />
-                  <p className="text-sm">
-                    Search by name or SKU to find products
-                  </p>
-                </div>
-              ) : filteredProducts.length === 0 ? (
+              {filteredProducts.length === 0 ? (
                 <div className="h-full flex flex-col items-center justify-center text-content-muted">
                   <p className="text-sm">
-                    No products found for "{productSearch}"
+                    {productSearch
+                      ? `No products found for "${productSearch}"`
+                      : "No products available in the main warehouse"}
                   </p>
                 </div>
               ) : (
