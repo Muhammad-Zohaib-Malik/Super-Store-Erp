@@ -21,7 +21,7 @@ const Login = () => {
 
     try {
       const res = await login(email, password);
-      if (res?.user?.role?.name === "Cashier") {
+      if (res?.user?.role?.name === "Cashier" || res?.user?.role?.name === "Manager") {
         navigate("/sales");
       } else {
         navigate("/");
