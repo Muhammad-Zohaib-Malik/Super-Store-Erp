@@ -18,7 +18,18 @@ export default function EmptyState({
           {description}
         </p>
       )}
-      {action && action}
+      {action && (
+        React.isValidElement(action) ? (
+          action
+        ) : typeof action === "object" && action.label ? (
+          <button
+            onClick={action.onClick}
+            className="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-primary-600 text-white text-sm font-medium rounded-xl hover:bg-primary-700 shadow-elevated transition-colors"
+          >
+            {action.label}
+          </button>
+        ) : null
+      )}
     </div>
   );
 }
