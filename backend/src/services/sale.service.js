@@ -2,6 +2,7 @@ import Sale from "../models/sale.model.js";
 import Inventory from "../models/inventory.model.js";
 import Product from "../models/product.model.js";
 import Warehouse from "../models/warehouse.model.js";
+import Return from "../models/return.model.js";
 
 export const createSale = async (saleData) => {
   const { items, warehouseId } = saleData;
@@ -107,5 +108,7 @@ export const deleteSale = async (id) => {
   if (!sale) {
     throw new Error("Sale not found");
   }
+  // Also delete any associated returns
+  await Return.deleteMany({ saleId: id });
   return sale;
 };

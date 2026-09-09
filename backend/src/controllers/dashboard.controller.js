@@ -11,20 +11,36 @@ export const getDashboardKPIs = async (req, res) => {
     const sales = await Sale.find();
     const returns = await Return.find();
 
-    const validSales = sales.filter((s) => !s.isReturned);
-    const totalOrders = validSales.length;
+    const totalOrders = sales.filter((s) => !s.isReturned).length;
     
-    // Gross Sales (excluding returned sales)
-    const grossSalesAmount = validSales.reduce(
+    // Gross Sales (Total Revenue before refunds)
+    const grossSalesAmount = sales.reduce(
       (sum, sale) => sum + (sale.totalAmount || 0),
       0,
     );
     
-    // Total Cost of Goods Sold (COGS) for valid sales only
+    // Total Cost of Goods Sold (COGS)
     let totalCOGS = 0;
-    validSales.forEach((sale) => {
+    sales.forEach((sale) => {
       sale.items.forEach((item) => {
         totalCOGS += (item.quantity || 0) * (item.unitCost || 0);
+      });
+    });
+
+    // Subtract COGS for returned items (since they go back into inventory, they aren't "sold")
+    returns.forEach((ret) => {
+      ret.items.forEach((retItem) => {
+        const originalSale = sales.find(
+          (s) => s._id.toString() === ret.saleId.toString()
+        );
+        if (originalSale) {
+          const originalItem = originalSale.items.find(
+            (i) => i.productId.toString() === retItem.productId.toString()
+          );
+          if (originalItem) {
+            totalCOGS -= (retItem.quantity || 0) * (originalItem.unitCost || 0);
+          }
+        }
       });
     });
 
@@ -33,7 +49,7 @@ export const getDashboardKPIs = async (req, res) => {
       0,
     );
 
-    const totalSalesAmount = grossSalesAmount; // Net Sales equals Gross Sales since returns are excluded
+    const totalSalesAmount = grossSalesAmount - totalRefundAmount; // Net Sales
     const grossProfit = totalSalesAmount - totalCOGS; // Gross Profit
     const totalReturnsCount = returns.length;
 
@@ -47,8 +63,7 @@ export const getDashboardKPIs = async (req, res) => {
       (r) => new Date(r.createdAt) >= startOfToday,
     );
 
-    const todaysValidSales = todaysSales.filter((s) => !s.isReturned);
-    const todayGrossSalesAmount = todaysValidSales.reduce(
+    const todayGrossSalesAmount = todaysSales.reduce(
       (sum, sale) => sum + (sale.totalAmount || 0),
       0,
     );
@@ -56,7 +71,7 @@ export const getDashboardKPIs = async (req, res) => {
       (sum, ret) => sum + (ret.totalRefundAmount || 0),
       0,
     );
-    const todaySalesAmount = todayGrossSalesAmount;
+    const todaySalesAmount = todayGrossSalesAmount - todayRefundAmount;
 
     // 3. Customers
     const totalCustomers = await Customer.countDocuments();
@@ -103,7 +118,7 @@ export const getDashboardKPIs = async (req, res) => {
     if (period === "12M") {
       const twelveMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 11, 1);
       const agg = await Sale.aggregate([
-        { $match: { createdAt: { $gte: twelveMonthsAgo }, isReturned: { $ne: true } } },
+        { $match: { createdAt: { $gte: twelveMonthsAgo } } },
         {
           $group: {
             _id: { $dateToString: { format: "%Y-%m", date: "$createdAt" } },
@@ -128,7 +143,7 @@ export const getDashboardKPIs = async (req, res) => {
       startDate.setHours(0, 0, 0, 0);
 
       const agg = await Sale.aggregate([
-        { $match: { createdAt: { $gte: startDate }, isReturned: { $ne: true } } },
+        { $match: { createdAt: { $gte: startDate } } },
         {
           $group: {
             _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
